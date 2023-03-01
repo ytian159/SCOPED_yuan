@@ -63,5 +63,5 @@ with fileinput.FileInput(dsmtif,
             print('	parameter ( maxnfreq= '+str(maxnfreq)+' )', end ='\n')
         else:
             print(line, end ='')
-!make clean
-!make
+os.system('make clean')
+os.system('make')
