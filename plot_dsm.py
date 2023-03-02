@@ -4,11 +4,15 @@ from pysep import recsec
 from pysep.recsec import plotw_rs
 from obspy import read, Stream,read_events
 from glob import glob
-import pandas as pd
 from pysep.utils.io import read_stations
 from obspy.geodetics import  kilometer2degrees
 import numpy as np
-
+mpi=1
+time_series_length, n_freqnency=256,1024
+if mpi==1:
+    os.chdir('./dsm_work/dsmti-2.2.10')
+else:
+    os.chdir('./dsm_work/dsmti-3.1.8')
 data_path='./data'
 cpnt='bhz'
 def get_obspy_st(data_path,cpnt):
@@ -48,5 +52,5 @@ def get_obspy_st(data_path,cpnt):
     return st
 st=get_obspy_st(data_path,cpnt)
 
-plotw_rs(st=st,overwrite=True,scale_by='global_norm',
-            sort_by='distance',preprocess='st',xlim_s=[0,time_series_length])
+plotw_rs(st=st,overwrite=True,scale_by='global_norm',xlim_s=[0,time_series_length],
+            sort_by='distance',preprocess='st',save='../../rs.png')

@@ -21,7 +21,6 @@ else:
 stations_path='../../STATIONS_FILTERED'
 cmt_path='../../CMTSOLUTION_20160124103029557'
 stas =pd.read_fwf(stations_path,header=None,index=None)
-#source=read_specfem3d_cmtsolution_cartesian(cmt_path)
 stations=read_stations(stations_path)
 source=read_events(cmt_path, format="CMTSOLUTION")[0]
 src_moment=source.focal_mechanisms[0].moment_tensor
@@ -30,8 +29,8 @@ nexp0=np.round(np.log10(src_moment.scalar_moment))
 
 in_para_file='./data/010109.inf'
 out_dir_dsm='data/'
-time_series_length, n_freqnency=256,1024
-ngrid_r,lmin,lmax=18000,0,16000
+time_series_length, n_freqnency=256,256
+ngrid_r,lmin,lmax=9000,0,8000
 with open(in_para_file, "r") as fl:
         lines = fl.readlines() 
 for i,line in enumerate(lines):
@@ -60,11 +59,12 @@ for i in range(len(stas)):
         lines.append(out_dir_dsm+'010109.'+stas.loc[i,0]+'\n')
 lines.append('c\n')
 lines.append('end\n')
-
+os.system('rm -f ./data/*bh*')
 os.rename(in_para_file,in_para_file+'.bak')
 with open(in_para_file, 'w') as f:
     for line in lines:
         f.write(f"{line}")
+
 chinook=1
 if mpi==1:
     if chinook==1:
