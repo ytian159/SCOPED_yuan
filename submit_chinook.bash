@@ -1,10 +1,10 @@
 #!/bin/bash
 
-#SBATCH -p debug
-#SBATCH --ntasks=4
-#SBATCH -t 60
+#SBATCH -p t1standard
+#SBATCH --ntasks=8
+#SBATCH -t 240
 #SBATCH --output=%j.o
-#SBATCH --job-name=go_solver
+#SBATCH --job-name=DSM
 
 ulimit -s unlimited
 ulimit -l unlimited
