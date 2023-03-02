@@ -13,8 +13,11 @@ from pysep.utils.io import read_stations
 from obspy.geodetics import  kilometer2degrees
 import numpy as np
 mpi=1
-num_cores=8
-
+num_cores=64
+if mpi==1:
+    os.chdir('./dsm_work/dsmti-2.2.10')
+else:
+    os.chdir('./dsm_work/dsmti-3.1.8')
 stations_path='../../STATIONS_FILTERED'
 cmt_path='../../CMTSOLUTION_20160124103029557'
 stas =pd.read_fwf(stations_path,header=None,index=None)
@@ -27,7 +30,7 @@ nexp0=np.round(np.log10(src_moment.scalar_moment))
 
 in_para_file='./data/010109.inf'
 out_dir_dsm='data/'
-time_series_length, n_freqnency=128,512
+time_series_length, n_freqnency=256,1024
 ngrid_r,lmin,lmax=18000,0,16000
 with open(in_para_file, "r") as fl:
         lines = fl.readlines() 
@@ -62,50 +65,24 @@ os.rename(in_para_file,in_para_file+'.bak')
 with open(in_para_file, 'w') as f:
     for line in lines:
         f.write(f"{line}")
-
+chinook=1
 if mpi==1:
-    os.system(f'mpirun -np {num_cores} dsmti  <data/010109.inf')
+    if chinook==1:
+        run_chi_file='submit_chinook.bash'
+#num_cores=8
+        os.system('cp ../../'+run_chi_file+' '+'./')
+        with fileinput.FileInput(run_chi_file,
+                         inplace = True, backup ='.bak') as f:
+            for line in f:
+                if 'NPROC=' in line:
+                    print(f'NPROC={num_cores:d}', end ='\n')
+                elif 'ntasks' in line:
+                    print(f'#SBATCH --ntasks={num_cores:d}')
+                else:
+                    print(line, end ='')
+        os.system('sbatch submit_chinook.bash')
+    else:
+        os.system(f'mpirun -np {num_cores} dsmti  <data/010109.inf')
 else:
-    ! ./dsmti  <data/010109.inf
+    os.system('./dsmti  <data/010109.inf')
 
-data_path='./data'
-cpnt='bhz'
-def get_obspy_st(data_path,cpnt):
-    fids=glob(os.path.join(data_path, "*."+cpnt))
-    st = Stream()
-    for fid in fids:
-        st += read(fid)
-    for i,tr in enumerate(st):
-        otime=tr.stats.starttime
-        dist_deg = kilometer2degrees(tr.stats.sac.dist) 
-        tr.stats.network='XX'
-        tr.stats.station=fids[i].split(sep='.')[-2]
-        tr.stats.channel=cpnt.upper()
-        tr.stats.sac = {
-                "iztype": 9,  # Ref time equivalence, IB (9): Begin time
-                "b": tr.stats.sac.b,  # begin time
-                "e": tr.stats.npts * tr.stats.delta,  # end time
-                "evla": tr.stats.sac.evla,
-                "evlo": tr.stats.sac.evlo,
-                "stla": tr.stats.sac.stla,
-                "stlo": tr.stats.sac.stlo,
-                "stel": 0,  # elevation in km
-                "kevnm": str(tr.stats.starttime),  # only take date code
-                "nzyear": otime.year,
-                "nzjday": otime.julday,
-                "nzhour": otime.hour,
-                "nzmin": otime.minute,
-                "nzsec": otime.second,
-                "nzmsec": otime.microsecond,
-                "dist": tr.stats.sac.dist,
-                "az": tr.stats.sac.az,  # degrees
-                "baz": tr.stats.sac.baz,  # degrees
-                "gcarc": dist_deg,  # degrees
-                "lpspol": 0,  # 1 if left-hand polarity (usually no in passive seis)
-                "lcalda": 1,  # 1 if DIST, AZ, BAZ, GCARC to be calc'd from metadata
-            }
-    return st
-st=get_obspy_st(data_path,cpnt)
-
-plotw_rs(st=st,overwrite=True,scale_by='global_norm',
-            sort_by='distance',preprocess='st',xlim_s=[0,time_series_length])
