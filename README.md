@@ -11,5 +11,7 @@ conda install cartopy
 
 pip install pysep-adjtomo
 
+The notebook Run_DSM_simple.ipynb runs the default example with one core. 
+The notebook Run_DSM_nenana.ipynb runs DSM with user's CMTSOLUTION and STATION files input and MPI.
 
 Yuan Tian 2023/02/28 @ UAF
