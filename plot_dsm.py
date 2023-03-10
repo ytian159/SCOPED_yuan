@@ -17,6 +17,7 @@ data_path='./data'
 cpnt='bhz'
 def get_obspy_st(data_path,cpnt):
     fids=glob(os.path.join(data_path, "*."+cpnt))
+    fids=sorted(fids)
     st = Stream()
     for fid in fids:
         st += read(fid)
@@ -53,4 +54,7 @@ def get_obspy_st(data_path,cpnt):
 st=get_obspy_st(data_path,cpnt)
 
 plotw_rs(st=st,overwrite=True,scale_by='global_norm',xlim_s=[0,time_series_length],
-            sort_by='distance',preprocess='st',save='../../rs.png')
+            sort_by='distance',preprocess='st',save='../../rs2.pdf',format='pdf',min_period_s=2,
+    max_period_s=40)
+#plotw_rs(st=st,overwrite=True,
+#            preprocess='st',save='../../rs.png')
