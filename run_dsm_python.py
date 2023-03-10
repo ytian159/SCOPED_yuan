@@ -13,7 +13,7 @@ from pysep.utils.io import read_stations
 from obspy.geodetics import  kilometer2degrees
 import numpy as np
 mpi=1
-num_cores=64
+num_cores=256
 if mpi==1:
     os.chdir('./dsm_work/dsmti-2.2.10')
 else:
@@ -29,8 +29,8 @@ nexp0=np.round(np.log10(src_moment.scalar_moment))
 
 in_para_file='./data/010109.inf'
 out_dir_dsm='data/'
-time_series_length, n_freqnency=256,256
-ngrid_r,lmin,lmax=9000,0,8000
+time_series_length, n_freqnency=256,1024
+ngrid_r,lmin,lmax=51200,0,20000
 with open(in_para_file, "r") as fl:
         lines = fl.readlines() 
 for i,line in enumerate(lines):

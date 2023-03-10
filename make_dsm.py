@@ -27,10 +27,10 @@ file.close()
 #os.remove(dsmti_file[0])
 
 maxngrid_r=100000
-maxlmax=16100
+maxlmax=25000
 maxn_structure_zone = 12
 max_nstation = 100
-maxnfreq = 4092
+maxnfreq = 8192
 os.chdir(work_dir+'/'+dsmti_file[0][:-4])
 #os.chdir('./dsm_work/dsmti-3.1.8')
 makefile='Makefile'
