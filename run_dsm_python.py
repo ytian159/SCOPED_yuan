@@ -30,7 +30,11 @@ nexp0=np.round(np.log10(src_moment.scalar_moment))
 in_para_file='./data/010109.inf'
 out_dir_dsm='data/'
 time_series_length, n_freqnency=256,1024
+<<<<<<< HEAD
 ngrid_r,lmin,lmax=51200,0,20000
+=======
+ngrid_r,lmin,lmax=9000,0,8000
+>>>>>>> 01ccbba580c755b1b633bcb9e6ec5faeb75e5e8d
 with open(in_para_file, "r") as fl:
         lines = fl.readlines() 
 for i,line in enumerate(lines):
