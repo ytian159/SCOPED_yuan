@@ -36,7 +36,9 @@ def set_compile_paramters(makefile,dsmtif,maxngrid_r,maxlmax,max_nstation):
                 print('        parameter ( maxlmax= '+str(maxlmax)+' )', end ='\n')
             elif "parameter ( maxnr" in line:
                 print('        parameter ( maxnr= '+str(max_nstation)+' )', end ='\n')
-            else:
+            elif "parameter ( spcform" in line:
+                print('        parameter ( spcform= 1 )  ! 0:binary, 1:ascii', end ='\n')
+ 	    else:
                 print(line, end ='')
 
 url_dsm='https://github.com/UT-GlobalSeismology/DSMsynTI-mpi/archive/refs/heads/master.zip'
