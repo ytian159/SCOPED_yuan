@@ -38,7 +38,7 @@ def set_compile_paramters(makefile,dsmtif,maxngrid_r,maxlmax,max_nstation):
                 print('        parameter ( maxnr= '+str(max_nstation)+' )', end ='\n')
             elif "parameter ( spcform" in line:
                 print('        parameter ( spcform= 1 )  ! 0:binary, 1:ascii', end ='\n')
- 	    else:
+            else:
                 print(line, end ='')
 
 url_dsm='https://github.com/UT-GlobalSeismology/DSMsynTI-mpi/archive/refs/heads/master.zip'
@@ -48,16 +48,16 @@ maxngrid_r=88300
 maxlmax=80000
 max_nstation = 1500
 makefile='makefile'
-use_own_data=0
+use_own_data=1
 dir_path=dsmti_file[0][:-4]
 os.chdir(dir_path)
-main_file='mpi-tish.f'
+main_file='tish.f'
 os.chdir('tish-mpi')
 set_compile_paramters(makefile,main_file,maxngrid_r,maxlmax,max_nstation)
 os.system('make')
 os.system('./tish <examples/test1.inf')
 os.chdir('../tipsv-mpi')
-main_file='mpi-tipsv.f'
+main_file='tipsv.f'
 set_compile_paramters(makefile,main_file,maxngrid_r,maxlmax,max_nstation)
 os.system('make')
 os.system('./tipsv <examples/test1.inf')
